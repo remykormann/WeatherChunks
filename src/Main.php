@@ -23,8 +23,6 @@ class Main extends PluginBase implements Listener{
         $this->getLogger()->info("WeatherChunks enabled");
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         $this->weatherManager = (new Weather($this->weatherData));
-
-        $this->weatherManager->setWeather($this->getServer()->getWorldManager()->getDefaultWorld(), 0, 0, Weather::RAIN);
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
@@ -67,7 +65,7 @@ class Main extends PluginBase implements Listener{
 		return false;
 	}
 
-    public static function getWeatherManager(): Weather {
+    public function getWeatherManager(): Weather {
         return $this->weatherManager;
     }
 }
