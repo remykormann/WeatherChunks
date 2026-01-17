@@ -45,15 +45,17 @@ class EventListener implements Listener {
 
         $weatherFrom = $weatherManager->get($world, $chunkFromX, $chunkFromZ);
         $weatherTo = $weatherManager->get($world, $chunkToX, $chunkToZ);
-
+        $biomeTo = $world->getChunk($chunkToX, $chunkToZ)->getBiomeId($player->getPosition()->getFloorX() & 0x0f, $player->getPosition()->getFloorY() & 0x0f, $player->getPosition()->getFloorZ() & 0x0f);
+        
         if($weatherFrom === $weatherTo) return;
-
+       
         $weatherManager->switchPlayerWeather($player, $world, $weatherTo);
     }
 
     public function onPlayerJoin(PlayerJoinEvent $event) : void {
         $player = $event->getPlayer();
         $world = $player->getWorld();
+
         $pos = $player->getPosition();
         $chunkX = $pos->getFloorX() >> 4;
         $chunkZ = $pos->getFloorZ() >> 4;

@@ -9,6 +9,7 @@ use pocketmine\event\Listener;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\permission\DefaultPermissions;
+use pocketmine\data\bedrock\BiomeIds;
 
 
 
@@ -23,6 +24,16 @@ class Main extends PluginBase implements Listener{
         $this->getLogger()->info("WeatherChunks enabled");
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         $this->weatherManager = (new Weather($this->weatherData));
+		$world = $this->getServer()->getWorldManager()->getDefaultWorld();
+
+		$this->weatherManager->setWeather($world, 0, 0, Weather::RAIN);
+
+		$this->weatherManager->generateRainMap($world, (int)$world->getTime());
+
+		$this->getScheduler()->scheduleRepeatingTask(
+			new Shedule($this->weatherManager, $world),
+			20 * 10
+		);
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
@@ -47,20 +58,30 @@ class Main extends PluginBase implements Listener{
 
         $world = $sender->getWorld();
 
+		$chunkX = $sender->getPosition()->getFloorX() >> 4;
+		$chunkZ = $sender->getPosition()->getFloorZ() >> 4;
+
 		if ($args[0] === "clear") {
-			$this->weatherManager->switchWeather($world, Weather::CLEAR);
+			$this->weatherManager->setWeather($world, $chunkX, $chunkZ, Weather::CLEAR);
 			return true;
 		}
 
 		if ($args[0] === "rain") {
-			$this->weatherManager->switchWeather($world, Weather::RAIN);
+			$this->weatherManager->setWeather($world, $chunkX, $chunkZ, Weather::DOWNFALL);
 			return true;
 		}
 
 		if ($args[0] === "thunder") {
-			$this->weatherManager->switchWeather($world, Weather::THUNDER);
+			$this->weatherManager->setWeather($world, $chunkX, $chunkZ, Weather::THUNDER);
 			return true;
 		}
+
+		if ($args[0] === "map") {
+			$this->weatherManager->sendRainMapToPlayer($sender);
+			return true;
+		}
+
+		$sender->sendMessage("§cUsage: /weatherchunks <clear|rain|thunder>§r");
 
 		return false;
 	}
