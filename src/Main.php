@@ -66,4 +66,8 @@ class Main extends PluginBase implements Listener{
 
 		return false;
 	}
+
+    public static function getWeatherManager(): Weather {
+        return $this->weatherManager;
+    }
 }
