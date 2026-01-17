@@ -6,4 +6,14 @@ main: Mysonied\WeatherChunks\Main
 api: 5.39.2
 src-namespace-prefix: Mysonied\WeatherChunks
 description: Per-chunk weather system for PM5
+commands:
+  weatherchunks:
+    description: Manage per-chunk weather
+    usage: "/weatherchunks <clear|rain|thunder>"
+    permission: weatherchunks.command
+
+permissions:
+  weatherchunks.command:
+    description: Allows using /weatherchunks
+    default: op
 ...
