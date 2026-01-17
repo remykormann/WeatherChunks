@@ -3,7 +3,7 @@ name: WeatherChunks
 author: Mysonied
 version: 0.0.1
 main: Mysonied\WeatherChunks\Main
-api: 5.39.2
+api: 5.0.0
 src-namespace-prefix: Mysonied\WeatherChunks
 description: Per-chunk weather system for PM5
 commands:
