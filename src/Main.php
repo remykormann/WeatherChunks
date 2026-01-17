@@ -14,12 +14,17 @@ use pocketmine\permission\DefaultPermissions;
 
 class Main extends PluginBase implements Listener{
 
-    private Weather $wather;
+    /** @var array<string, int> */
+    private array $weatherData = [];
+
+    public Weather $weatherManager;
 
     protected function onEnable(): void {
         $this->getLogger()->info("WeatherChunks enabled");
-        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
-        $this->weather = (new Weather);
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
+        $this->weatherManager = (new Weather($this->weatherData));
+
+        $this->weatherManager->setWeather($this->getServer()->getWorldManager()->getDefaultWorld(), 0, 0, Weather::RAIN);
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
@@ -45,17 +50,17 @@ class Main extends PluginBase implements Listener{
         $world = $sender->getWorld();
 
 		if ($args[0] === "clear") {
-			$this->weather->switchWeather($world, Weather::CLEAR);
+			$this->weatherManager->switchWeather($world, Weather::CLEAR);
 			return true;
 		}
 
 		if ($args[0] === "rain") {
-			$this->weather->switchWeather($world, Weather::RAIN);
+			$this->weatherManager->switchWeather($world, Weather::RAIN);
 			return true;
 		}
 
 		if ($args[0] === "thunder") {
-			$this->weather->switchWeather($world, Weather::THUNDER);
+			$this->weatherManager->switchWeather($world, Weather::THUNDER);
 			return true;
 		}
 

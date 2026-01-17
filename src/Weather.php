@@ -7,20 +7,22 @@ namespace Mysonied\WeatherChunks;
 use pocketmine\network\mcpe\protocol\types\LevelEvent;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use pocketmine\world\World;
+use pocketmine\player\Player;
 
 
 class Weather{
-
         public const CLEAR = 0;
         public const RAIN = 2;
         public const THUNDER = 5;
 
-        public function switchWeather(World $world, int $weather) : void {
+        public function __construct(
+            private array $weatherData = []
+        ) {}
+
+        public function switchPlayerWeather(Player $player, World $world, int $weather) : void {
             $packets = $this->getWeatherPackets($world, $weather);
-            foreach ($world->getPlayers() as $player) {
-                foreach ($packets as $pk) {
-                    $player->getNetworkSession()->sendDataPacket($pk);
-                }
+            foreach ($packets as $pk) {
+                $player->getNetworkSession()->sendDataPacket($pk);
             }
         }
 
@@ -47,5 +49,48 @@ class Weather{
             }
 
             return $pks;
+        }
+
+        public function setWeather(World $world, int $chunkX, int $chunkZ, int $weather) : void {
+            $key = $this->key($world, $chunkX, $chunkZ);
+
+            if ($weather === Weather::CLEAR) {
+                unset($this->weatherData[$key]);
+                return;
+            }
+
+            $this->weatherData[$key] = $weather;
+        }
+
+        public function updateWeather(World $world) : void {
+            foreach ($world->getPlayers() as $player) {
+                $weather = $this->getPlayerWeather($player);
+                $this->switchPlayerWeather($player, $world, $weather);
+            }
+        }
+
+        public function getPlayerWeather(Player $player) : int {
+            $world = $player->getWorld();
+            $pos = $player->getPosition();
+            $chunkX = $pos->getFloorX() >> 4;
+            $chunkZ = $pos->getFloorZ() >> 4;
+            $key = $this->key($world, $chunkX, $chunkZ);
+            return $this->weatherData[$key] ?? Weather::CLEAR;
+        }
+
+        private function key(World $world, int $chunkX, int $chunkZ) : string {
+            return $world->getFolderName() . ":" . $chunkX . ":" . $chunkZ;
+        }
+
+        public function get(World $world, int $chunkX, int $chunkZ) : int {
+            return $this->weatherData[$this->key($world, $chunkX, $chunkZ)] ?? Weather::CLEAR;
+        }
+
+        public function all() : array {
+            return $this->weatherData;
+        }
+
+        public function load(array $data) : void {
+            $this->weatherData = $data;
         }
 }
