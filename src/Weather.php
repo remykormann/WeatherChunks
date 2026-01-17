@@ -23,10 +23,6 @@ class Weather{
     public int $SIZE = 256;
     public array $rainMap = [];
 
-    /*public function __construct(
-        private array $weatherData = []
-    ) {}*/
-
     public function switchPlayerWeather(Player $player, World $world, int $weather) : void {
         $packets = $this->getWeatherPackets($world, $weather);
         foreach ($packets as $pk) {

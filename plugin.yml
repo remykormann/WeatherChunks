@@ -9,7 +9,7 @@ description: Per-chunk weather system for PM5
 commands:
   weatherchunks:
     description: Manage per-chunk weather
-    usage: "/weatherchunks <clear|rain|thunder>"
+    usage: "/weatherchunks <clear|rain|thunder|map>"
     permission: weatherchunks.command
 
 permissions:

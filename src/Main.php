@@ -26,8 +26,6 @@ class Main extends PluginBase implements Listener{
         $this->weatherManager = (new Weather($this->weatherData));
 		$world = $this->getServer()->getWorldManager()->getDefaultWorld();
 
-		$this->weatherManager->setWeather($world, 0, 0, Weather::RAIN);
-
 		$this->weatherManager->generateRainMap($world, (int)$world->getTime());
 
 		$this->getScheduler()->scheduleRepeatingTask(
@@ -52,7 +50,7 @@ class Main extends PluginBase implements Listener{
 		}
 
 		if (count($args) < 1) {
-            $sender->sendMessage("§cUsage: /weatherchunks <clear|rain|thunder>§r");
+            $sender->sendMessage("§cUsage: /weatherchunks <clear|rain|thunder|map>§r");
 			return false;
 		}
 
