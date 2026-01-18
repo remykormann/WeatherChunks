@@ -1,8 +1,9 @@
 # WeatherChunks
+[![](https://poggit.pmmp.io/shield.state/WeatherChunks)](https://poggit.pmmp.io/p/WeatherChunks)
 Per-chunk weather system for PocketMine
 
 TODO:
 - no fire under the rain
-- per biome gestion
+- no rain in the desert biome
 
-[![](https://poggit.pmmp.io/shield.state/WeatherChunks)](https://poggit.pmmp.io/p/WeatherChunks)
+
